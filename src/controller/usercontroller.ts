@@ -1,11 +1,11 @@
 import { Request, NextFunction, Response } from "express";
 import { createUser, findUserByWallet, getAllUsers } from "../service/userservice";
-import { User } from "../types";
+import { AuthRequest, User } from "../types";
 import { InvalidError } from "../utils/errors";
 
 
 // Create a new User
-export async function post(req: Request, res: Response, next: NextFunction) {
+export async function post(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const user = req.body as User;
         const valid = user.walletAddress && user.userType
@@ -25,7 +25,7 @@ export async function post(req: Request, res: Response, next: NextFunction) {
 }
 
 // Get list of Users
-export async function get(req: Request, res: Response, next: NextFunction) {
+export async function get(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const users = await getAllUsers();
         res.json(users);
