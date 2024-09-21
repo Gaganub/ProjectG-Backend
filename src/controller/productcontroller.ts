@@ -3,14 +3,24 @@ import { Product } from "../types";
 import { InvalidError } from "../utils/errors";
 import { createProduct, findProductById, getAllProducts } from "../service/productservice";
 
-export async function post(req: Request, res: Response, next: NextFunction) {
-    try {
-        const product = req.body as Product;
+function validateProducts(products: Product[]) {
+    if (!Array.isArray(products) || products.length === 0) {
+        throw new InvalidError('Product input must be a non-empty array');
+    }
+
+    products.forEach((product, index) => {
         const valid = product.name;
         if (!valid) {
-            throw new InvalidError('Incorrect product input missing name');
+            throw new InvalidError(`Incorrect product input at index ${index}: missing name`);
         }
-        const value = await createProduct(product);
+    });
+}
+
+export async function post(req: Request, res: Response, next: NextFunction) {
+    try {
+        const products = req.body as Product[];
+        validateProducts(products)
+        const value = await createProduct(products);
         res.status(201).json(value);
     } catch (e: any) {
         next(e);

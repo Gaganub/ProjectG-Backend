@@ -3,10 +3,11 @@ import { Product } from "../types";
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-export async function createProduct(product: Product) {
+export async function createProduct(product: Product[]) {
     // Create a new product
-    const createdProduct = await prisma.product.create({
+    const createdProduct = await prisma.product.createMany({
         data: product,
+        skipDuplicates: true,
     });
     console.log(`Created product ${product}`);
     return createdProduct;
