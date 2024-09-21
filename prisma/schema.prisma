@@ -14,3 +14,38 @@ model User {
   nonce           String
   userType        String    
 }
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Float
+  description String?
+}
+
+model Order {
+  id          Int             @id @default(autoincrement())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  supplier    User
+  customer    User
+  products    OrderProduct[]  // Relation table between Order and Product
+  shipment    Shipment?       // Relation to Shipment, optional
+}
+
+model OrderProduct {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  quantity  Int     // Number of units of the product in this order
+  @@unique([orderId, productId])
+}
+
+model Shipment {
+  id                  Int               @id @default(autoincrement())
+  shippedAt           DateTime          @default(now())
+  logisticsProvider   User              @relation(fields: [logisticsProviderId], references: [id])
+  logisticsProviderId Int
+  orders             Order[]           // Multiple orders in a shipment
+}
