@@ -1,0 +1,49 @@
+import { Response, Request, NextFunction } from 'express';
+import express from "express";
+import bodyParser from 'body-parser';
+import { rootRouter } from './routes/rootrouter';
+import { InvalidError, NotFoundError, TokenExpiredError, UnauthorizedError } from './utils/errors';
+import logger from './utils/logger';
+import { userRouter } from './routes/userrouter';
+
+require('dotenv').config();
+
+const app = express();
+app.use(bodyParser.json()); // Middleware to parse JSON bodies
+app.use('/', rootRouter);
+app.use('/users', userRouter);
+
+
+// Middleware for global error hanlding
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    let statusCode: number = 500;
+    let errorMessage = err.message;
+    switch (err.constructor) {
+        case NotFoundError:
+            statusCode = 404;
+            break;
+        case TokenExpiredError:
+            statusCode = 498;
+            break;
+        case UnauthorizedError:
+            statusCode = 401;
+            break;
+        case InvalidError:
+            statusCode = 400;
+            break;
+        default:
+            statusCode = 500;
+            logger.error(err);
+            errorMessage = 'Internal server error, please contact Administrator';
+            break;
+    }
+
+    res.status(statusCode).json({
+        error: errorMessage,
+    });
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`ProjectG app listening on port ${port}`);
+});
