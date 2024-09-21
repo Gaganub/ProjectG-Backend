@@ -6,10 +6,6 @@ import { createOrder, findOrderById, getAllOrders } from "../service/orderservic
 export async function post(req: Request, res: Response, next: NextFunction) {
     try {
         const order = req.body as Order;
-        const valid = order.customerId && order.supplierId;
-        if (!valid) {
-            throw new InvalidError('Incorrect order input missing name');
-        }
         const value = await createOrder(order);
         res.status(201).json(value);
     } catch (e: any) {
@@ -28,7 +24,7 @@ export async function get(req: Request, res: Response, next: NextFunction) {
 
 export async function getOrder(req: Request, res: Response, next: NextFunction) {
     try {
-        const orderId = req.params.id
+        const orderId = parseInt(req.params.id);
         const order = await findOrderById(orderId);
         res.status(200).json(order);
     } catch (e: any) {

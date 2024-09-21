@@ -17,3 +17,6 @@ To install the dependencies, run `npm install`.
 
 To generate schema
 npx prisma generate
+
+To migrate prisma schema
+npx prisma migrate dev --name create_product_table

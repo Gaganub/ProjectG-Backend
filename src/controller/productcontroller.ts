@@ -28,7 +28,7 @@ export async function get(req: Request, res: Response, next: NextFunction) {
 
 export async function getProduct(req: Request, res: Response, next: NextFunction) {
     try {
-        const productId = req.params.id
+        const productId = parseInt(req.params.id);
         const product = await findProductById(productId);
         res.status(200).json(product);
     } catch (e: any) {

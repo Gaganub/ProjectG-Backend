@@ -17,13 +17,26 @@ export async function createUser(user: User) {
     console.log(`Created user ${createdUser.name}`);
     return createdUser;
 }
-
 export async function findUserByWallet(walletAddress: string) {
-    let user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
             walletAddress: walletAddress
         }
     });
+    return user;
+}
+
+export async function findUserById(id: number) {
+    const user = await prisma.user.findUnique({
+        where: {
+            id: id
+        }
+    });
+    return user;
+}
+
+export async function findAndCreateUserByWallet(walletAddress: string) {
+    let user = await findUserByWallet(walletAddress);
     if (!user) {
         const newUser = {
             walletAddress: walletAddress,

@@ -1,7 +1,7 @@
 import { SiweMessage } from "siwe";
 import { InvalidError } from "../utils/errors";
 import { generateToken } from "../utils/utils";
-import { findUserByWallet } from "./userservice";
+import { findAndCreateUserByWallet } from "./userservice";
 
 function createSiweMessage (address: string, statement: string) {
     const HOST_NAME = process.env.HOST_NAME || 'localhost';
@@ -27,7 +27,7 @@ export async function validateSig(walletAddress: string, signature: string, nonc
 }
 
 export async function getToken(wallet: string, sig: string) {
-    const user = await findUserByWallet(wallet);
+    const user = await findAndCreateUserByWallet(wallet);
     const valid = await validateSig(wallet, sig, user.nonce);
     if (!valid) {
         throw new InvalidError("Invalid signature");
@@ -36,6 +36,6 @@ export async function getToken(wallet: string, sig: string) {
 }
 
 export async function getNonce(walletAddress: string) {
-    const user = await findUserByWallet(walletAddress);
+    const user = await findAndCreateUserByWallet(walletAddress);
     return user.nonce;
 }

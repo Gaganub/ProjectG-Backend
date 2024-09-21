@@ -12,7 +12,7 @@ export async function createProduct(product: Product) {
     return createdProduct;
 }
 
-export async function findProductById(productId: string) {
+export async function findProductById(productId: number) {
     let product = await prisma.product.findUnique({
         where: {
             id: productId

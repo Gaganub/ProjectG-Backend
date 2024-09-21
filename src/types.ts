@@ -9,7 +9,6 @@ export interface User {
     name: string;
     nonce: string;
     userType: UserType;
-    id?: number;
 }
 
 export enum UserType {
@@ -19,7 +18,6 @@ export enum UserType {
 }
 
 export interface Product {
-    id: number;
     name: string;
     price: number;
     description?: string;
@@ -27,7 +25,6 @@ export interface Product {
 }
 
 export interface OrderProduct {
-    id: number;
     orderId: number;
     productId: number;
     quantity: number;
@@ -35,7 +32,6 @@ export interface OrderProduct {
 }
 
 export interface Order {
-    id: number;
     supplierId: number;
     customerId: number;
     shipmentProviderId: number;
