@@ -1,36 +1,34 @@
 import { Request, NextFunction, Response } from "express";
 import { getNonce } from "../service/rootservice";
-import { getToken } from "../service/rootservice";
+import { getTokenAndUser } from "../service/rootservice";
 import { getSignature, getWalletAddress } from "./controllerutils";
 
 export async function nonce(req: Request, res: Response, next: NextFunction) {
-    const walletAddress = getWalletAddress(req);
-    if (walletAddress) {
-        try {
-            const nonce = await getNonce(walletAddress);
-            res.status(200).json(nonce);
-        } catch (e: any) {
-            next(e)
+    try {
+        const walletAddress = req.body.walletAddress;
+        if (!walletAddress) {
+            throw new Error('Missing walletaddress in request body');
         }
-    } else {
-        res.status(400).json({ error: 'Invalid walletaddress in request headers' });
+        const nonce = await getNonce(walletAddress);
+        res.status(200).json({nonce});
+    } catch (e: any) {
+        next(e);
     }
 }
 
 
 export async function login(req: Request, res: Response, next: NextFunction) {
-    const walletAddress = getWalletAddress(req);
-    if (!walletAddress) {
-        return res.status(400).json({ error: 'Missing walletaddress in request headers' });
-    }
-    const signature = getSignature(req);
-    if (!signature) {
-        return res.status(400).json({ error: 'Missing signature in request headers' });
-    }
     try {
-        const token = await getToken(walletAddress, signature)
-        return res.status(200).json({ accessToken: token });
-    } catch (e: any) {
-        next(e);
+        const {walletAddress, signature} = req.body;
+        if (!walletAddress) {
+            throw new Error('Missing walletaddress in request body');
+        }
+        if (!signature) {
+            throw new Error('Missing signature in request body');
+        }
+        const data = await getTokenAndUser(walletAddress, signature);
+        return res.status(200).json(data);
+    } catch (error) {
+        next(error);
     }
 }
