@@ -1,5 +1,5 @@
 import { Request, NextFunction, Response } from "express";
-import { getNonce } from "../service/rootservice";
+import { getNonce, updateNonce } from "../service/rootservice";
 import { getTokenAndUser } from "../service/rootservice";
 import { getSignature, getWalletAddress } from "./controllerutils";
 
@@ -27,6 +27,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
             throw new Error('Missing signature in request body');
         }
         const data = await getTokenAndUser(walletAddress, signature);
+        await updateNonce(walletAddress);
         return res.status(200).json(data);
     } catch (error) {
         next(error);
