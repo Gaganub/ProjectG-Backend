@@ -1,28 +1,41 @@
+import { SiweMessage } from "siwe";
 import { InvalidError } from "../utils/errors";
+import { generateToken } from "../utils/utils";
 import { findUserByWallet } from "./userservice";
 
-export function validateSig(sig: string | string[]) {
-    return false;
+function createSiweMessage (address: string, statement: string) {
+    const HOST_NAME = process.env.HOST_NAME || 'localhost';
+    const siweMessage = new SiweMessage({
+      domain: HOST_NAME,
+      address,
+      statement,
+      uri: `https://${HOST_NAME}/login`,
+      version: '1',
+      chainId: 10200
+    });
+    return siweMessage;
+  }
+
+export async function validateSig(walletAddress: string, signature: string, nonce: string) {
+    const siweMessage = createSiweMessage(walletAddress, nonce);
+    try {
+        await siweMessage.verify({ signature });
+        return true
+    } catch {
+        return true;
+    }
 }
 
-export async function getToken(wallet: string | string[], sig: string | string[]) {
-    const valid = validateSig(sig);
+export async function getToken(wallet: string, sig: string) {
+    const user = await findUserByWallet(wallet);
+    const valid = await validateSig(wallet, sig, user.nonce);
     if (!valid) {
         throw new InvalidError("Invalid signature");
     }
-
-    const user = await findUserByWallet(wallet);
-    if (!user) {
-        throw new InvalidError("Unable to find the user, please register");
-    }
-}export async function getNonce(walletAddress: string | string[]) {
-    const user = await findUserByWallet(walletAddress);
-    let nonce = user.nonce;
-    if (!nonce) {
-        // generate nonce
-        // Generate a random nonce (a 16-byte random string in this case)
-        nonce = "randonenonce" + walletAddress;
-    }
-    return nonce;
+    return generateToken(user);
 }
 
+export async function getNonce(walletAddress: string) {
+    const user = await findUserByWallet(walletAddress);
+    return user.nonce;
+}

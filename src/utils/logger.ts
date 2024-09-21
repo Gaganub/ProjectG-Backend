@@ -16,7 +16,7 @@ const logger = winston.createLogger({
         debug: 4,
     },
     format: winston.format.combine(
-        winston.format.label({ label: "MQTT Server - WMS" }),
+        winston.format.label({ label: "ProjectG - Backend" }),
         winston.format.timestamp(),
         myFormat
     ),

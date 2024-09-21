@@ -5,15 +5,15 @@ export interface AuthRequest extends Request {
 }
 
 export interface User {
-    id: number;
     walletAddress: string;
     name: string;
     nonce: string;
     userType: UserType;
+    id?: number;
 }   
 
-enum UserType {
-    SUPPLIER,
-    CUSTOMER,
-    LOGISTICS_PROVIDER
+export enum UserType {
+    SUPPLIER = 'SUPPLIER',
+    CUSTOMER = 'CUSTOMER' ,
+    SHIPMENT_PROVIDER = 'SHIPMENT_PROVIDER'
   }

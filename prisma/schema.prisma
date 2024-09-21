@@ -12,7 +12,12 @@ model User {
   walletAddress   String    @unique
   name            String
   nonce           String
-  userType        String    
+  userType        String  
+  
+  // Relations
+  customerOrders Order[] @relation("CustomerOrders") // For users with userType CUSTOMER
+  supplierOrders Order[] @relation("SupplierOrders") // For users with userType SUPPLIER
+  shipmentProviderOrders      Order[] @relation("ShipmentProviderOrders") // For users with userType SHIPMENT_PROVIDER
 }
 
 model Product {
@@ -20,32 +25,31 @@ model Product {
   name        String
   price       Float
   description String?
-}
 
-model Order {
-  id          Int             @id @default(autoincrement())
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  supplier    User
-  customer    User
-  products    OrderProduct[]  // Relation table between Order and Product
-  shipment    Shipment?       // Relation to Shipment, optional
+  // Relations
+  productOrders OrderProduct[] @relation("ProductOrders")
 }
 
 model OrderProduct {
   id        Int     @id @default(autoincrement())
   order     Order   @relation(fields: [orderId], references: [id])
   orderId   Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation("ProductOrders", fields: [productId], references: [id])
   productId Int
   quantity  Int     // Number of units of the product in this order
-  @@unique([orderId, productId])
+  @@unique([orderId, id])
 }
 
-model Shipment {
-  id                  Int               @id @default(autoincrement())
-  shippedAt           DateTime          @default(now())
-  logisticsProvider   User              @relation(fields: [logisticsProviderId], references: [id])
-  logisticsProviderId Int
-  orders             Order[]           // Multiple orders in a shipment
+model Order {
+  id          Int             @id @default(autoincrement())
+  supplier    User @relation("SupplierOrders", fields: [supplierId], references: [id])
+  supplierId  Int
+  customer    User @relation("CustomerOrders", fields: [customerId], references: [id])
+  customerId  Int
+  shipmentProvider  User @relation("ShipmentProviderOrders", fields: [shipmentProviderId], references: [id])
+  shipmentProviderId Int
+  products    OrderProduct[]  // Relation table between Order and Product
+  shippedAt   DateTime
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @default(now())
 }

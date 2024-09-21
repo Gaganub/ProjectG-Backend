@@ -1,13 +1,24 @@
 import { Request, NextFunction, Response } from "express";
-import { createUser, getAllUsers } from "../service/userservice";
+import { createUser, findUserByWallet, getAllUsers } from "../service/userservice";
 import { User } from "../types/user";
+import { InvalidError } from "../utils/errors";
 
 
 // Create a new User
 export async function post(req: Request, res: Response, next: NextFunction) {
     try {
-        const value = await createUser(req.body as User);
-        res.status(201).json(value);
+        const user = req.body as User;
+        const valid = user.walletAddress && user.userType
+        if (!valid) {
+            throw new InvalidError("Incorrect user input missing either walletAddress or userType");
+        }
+        const existingUser = await findUserByWallet(user.walletAddress);
+        if (existingUser) {
+            throw new InvalidError("User already exists!!");
+        } else {
+            const value = await createUser(user);
+            res.status(201).json(value);
+        }
     } catch (e: any) {
        next(e)
     }
