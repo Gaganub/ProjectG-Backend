@@ -16,7 +16,7 @@ To install the **prisma**, run `npm install prisma`.
 To install the dependencies, run `npm install`.
 
 To generate schema
-npx prisma generate
+`npx prisma generate`
 
 To migrate prisma schema
-npx prisma migrate dev --name create_product_table
+`npx prisma migrate dev --name create_product_table`
