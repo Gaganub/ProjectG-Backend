@@ -5,6 +5,8 @@ import { rootRouter } from './routes/rootrouter';
 import { InvalidError, NotFoundError, TokenExpiredError, UnauthorizedError } from './utils/errors';
 import logger from './utils/logger';
 import { userRouter } from './routes/userrouter';
+import { productRouter } from './routes/productrouter';
+import { orderRouter } from './routes/orderrouter';
 
 require('dotenv').config();
 
@@ -12,6 +14,8 @@ const app = express();
 app.use(bodyParser.json()); // Middleware to parse JSON bodies
 app.use('/', rootRouter);
 app.use('/users', userRouter);
+app.use('/products', productRouter);
+app.use('/orders', orderRouter);
 
 
 // Middleware for global error hanlding

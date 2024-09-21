@@ -1,6 +1,6 @@
 import { Request, NextFunction, Response } from "express";
 import { createUser, findUserByWallet, getAllUsers } from "../service/userservice";
-import { User } from "../types/user";
+import { User } from "../types";
 import { InvalidError } from "../utils/errors";
 
 

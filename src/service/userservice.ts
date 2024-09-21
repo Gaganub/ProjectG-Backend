@@ -1,4 +1,4 @@
-import { User, UserType } from "../types/user";
+import { User, UserType } from "../types";
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
