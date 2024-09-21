@@ -56,9 +56,30 @@ export async function findOrderById(orderId: number) {
             id: orderId
         },
         include: {
-            supplier: true,
-            customer: true,
-            shipmentProvider: true,
+            supplier: {
+                select: {
+                    id: true,
+                    name: true,
+                    walletAddress: true,
+                    userType: true,
+                  }
+            },
+            customer: {
+                select: {
+                    id: true,
+                    name: true,
+                    walletAddress: true,
+                    userType: true,
+                  }
+            },
+            shipmentProvider: {
+                select: {
+                    id: true,
+                    name: true,
+                    walletAddress: true,
+                    userType: true,
+                  }
+            },
             products: {
                 include: {
                     product: true

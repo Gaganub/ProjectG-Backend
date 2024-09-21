@@ -15,6 +15,7 @@ export async function createUser(user: User) {
         data: user,
     });
     console.log(`Created user ${createdUser.name}`);
+    delete createdUser.nonce;
     return createdUser;
 }
 export async function findUserByWallet(walletAddress: string) {
@@ -30,6 +31,12 @@ export async function findUserById(id: number) {
     const user = await prisma.user.findUnique({
         where: {
             id: id
+        },
+        select: {
+            id: true,
+            name: true,
+            walletAddress: true,
+            userType: true,
         }
     });
     return user;
@@ -50,6 +57,13 @@ export async function findAndCreateUserByWallet(walletAddress: string) {
 }
 
 export async function getAllUsers() {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            walletAddress: true,
+            userType: true,
+        }
+    });
     return users;
 }
