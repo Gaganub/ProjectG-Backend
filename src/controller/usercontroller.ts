@@ -10,7 +10,7 @@ export async function post(req: Request, res: Response, next: NextFunction) {
         const user = req.body as User;
         const valid = user.walletAddress && user.userType
         if (!valid) {
-            throw new InvalidError("Incorrect user input missing either walletAddress or userType");
+            throw new InvalidError('Incorrect user input missing either walletAddress or userType');
         }
         const existingUser = await findUserByWallet(user.walletAddress);
         if (existingUser) {
