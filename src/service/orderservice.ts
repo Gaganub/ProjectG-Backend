@@ -27,10 +27,15 @@ export async function createOrder(order: Order) {
             create: order.products.map(product => ({
                 quantity: product.quantity,
                 product: {
-                    create: {
-                        name: product.product?.name,
-                        price: product.product?.price,
-                        description: product.product?.description
+                    connectOrCreate: {
+                        where: {
+                            id: product.productId
+                        },
+                        create: {
+                            name: product.product?.name,
+                            price: product.product?.price,
+                            description: product.product?.description
+                        }
                     }
                 }
             }))
