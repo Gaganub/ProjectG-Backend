@@ -3,18 +3,18 @@ import { InvalidError } from "../utils/errors";
 import { generateToken } from "../utils/utils";
 import { findAndCreateUserByWallet } from "./userservice";
 
-function createSiweMessage (address: string, statement: string) {
+function createSiweMessage(address: string, statement: string) {
     const HOST_NAME = process.env.HOST_NAME || 'localhost';
     const siweMessage = new SiweMessage({
-      domain: HOST_NAME,
-      address,
-      statement,
-      uri: `https://${HOST_NAME}/login`,
-      version: '1',
-      chainId: 10200
+        domain: HOST_NAME,
+        address,
+        statement,
+        uri: `https://${HOST_NAME}/login`,
+        version: '1',
+        chainId: 10200
     });
     return siweMessage;
-  }
+}
 
 export async function validateSig(walletAddress: string, signature: string, nonce: string) {
     const siweMessage = createSiweMessage(walletAddress, nonce);
@@ -26,13 +26,14 @@ export async function validateSig(walletAddress: string, signature: string, nonc
     }
 }
 
-export async function getToken(wallet: string, sig: string) {
-    const user = await findAndCreateUserByWallet(wallet);
+
+export async function getTokenAndUser(wallet: string, sig: string) {
+    const user = await findUserByWallet(wallet);
     const valid = await validateSig(wallet, sig, user.nonce);
     if (!valid) {
         throw new InvalidError("Invalid signature");
     }
-    return generateToken(user);
+    return { "accessToken": generateToken(user), "user": user };
 }
 
 export async function getNonce(walletAddress: string) {

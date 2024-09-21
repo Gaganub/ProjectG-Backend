@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.6",
     "prisma": "^5.19.1",
     "rimraf": "^6.0.1",

@@ -7,11 +7,16 @@ import logger from './utils/logger';
 import { userRouter } from './routes/userrouter';
 import { productRouter } from './routes/productrouter';
 import { orderRouter } from './routes/orderrouter';
+import cors from 'cors';
 
 require('dotenv').config();
 
 const app = express();
-app.use(bodyParser.json()); // Middleware to parse JSON bodies
+app.use(cors());
+app.use(express.json());
+
+app.options('*', cors());
+
 app.use('/', rootRouter);
 app.use('/users', userRouter);
 app.use('/products', productRouter);
