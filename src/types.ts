@@ -18,7 +18,7 @@ export enum UserType {
     SHIPMENT_PROVIDER = 'SHIPMENT_PROVIDER'
 }
 
-interface Product {
+export interface Product {
     id: number;
     name: string;
     price: number;
@@ -26,7 +26,7 @@ interface Product {
     productOrders: OrderProduct[];
 }
 
-interface OrderProduct {
+export interface OrderProduct {
     id: number;
     orderId: number;
     productId: number;
@@ -34,8 +34,7 @@ interface OrderProduct {
     product?: Product;
 }
 
-
-interface Order {
+export interface Order {
     id: number;
     supplierId: number;
     customerId: number;
